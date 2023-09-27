@@ -1,4 +1,6 @@
 import { Event } from "../Helpers/createCalendarAPI";
+import { formatDateToYYYYMMDD } from "../Helpers/formatDateToYYYYMMDD";
+import { EventItem } from "./Event";
 import { WeekViewCalendarHeader } from "./WeekViewCalendarHeader";
 import { Column } from "./WeekViewDayColl";
 
@@ -7,10 +9,10 @@ export const WeekViewCalendar: React.FC<{
   activeDay: Date;
   today: Date;
   events: Event[];
-}> = ({ setActiveDayClick, activeDay, today }) => {
+  handleEventDelete: (id: number) => void;
+}> = ({ activeDay, events, handleEventDelete, setActiveDayClick, today }) => {
   const dayColumnData: {
     date: string;
-    // column: JSX.Element;
   }[] = [];
 
   const year = activeDay.getFullYear();
@@ -25,8 +27,7 @@ export const WeekViewCalendar: React.FC<{
       const renderingDay = new Date(currentWeekStart);
       renderingDay.setDate(renderingDay.getDate() + i);
       return {
-        date: renderingDay.toDateString(),
-        // column: Column,
+        date: formatDateToYYYYMMDD(renderingDay),
       };
     });
 
@@ -43,8 +44,8 @@ export const WeekViewCalendar: React.FC<{
       </div>
 
       <WeekViewCalendarHeader
-        setActiveDayClick={setActiveDayClick}
         activeDay={activeDay}
+        setActiveDayClick={setActiveDayClick}
         today={today}
       />
 
@@ -122,8 +123,19 @@ export const WeekViewCalendar: React.FC<{
       <div className="week-layout-wrapper">
         {weekViewDayColums.map((columnDate) => {
           return (
-            <Column key={columnDate.date} />
-            // <Column events={events.filter((event) => event.date.toDateString() === columnDate.date)} />
+            <Column key={columnDate.date}>
+              {events
+                .filter((event) => event.date === columnDate.date)
+                .map((event, i) => {
+                  return (
+                    <EventItem
+                      key={i}
+                      event={event}
+                      onDelete={() => handleEventDelete(event.id)}
+                    />
+                  );
+                })}
+            </Column>
           );
         })}
       </div>

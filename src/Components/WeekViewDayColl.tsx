@@ -1,7 +1,9 @@
-// export const Column: React.FC<{ events: React.ReactNode }> = ({ events }) => {
-export const Column: React.FC = () => {
+export const Column: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   return (
     <ul className="lg-calendar__cell-list">
+      {children}
       <li className="lg-calendar__cell-item"></li>
       <li className="lg-calendar__cell-item"></li>
       <li className="lg-calendar__cell-item"></li>
@@ -26,7 +28,6 @@ export const Column: React.FC = () => {
       <li className="lg-calendar__cell-item"></li>
       <li className="lg-calendar__cell-item"></li>
       <li className="lg-calendar__cell-item"></li>
-      {/* {events} */}
     </ul>
   );
 };

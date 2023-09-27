@@ -25,7 +25,6 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
     calendarAPI
       .createEvent(formValues)
       .then((event) => {
-        console.log({ event });
         dispatchCalendarActions({
           type: "SAVE_EVENT_SUCCESS",
           payload: event,
@@ -35,6 +34,20 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
       .catch(() => {
         // return dispatchState({ type: "SAVE_EVENT_FAILURE" });
         return "calendarAPI.createEvent error";
+      });
+  };
+
+  const handleEventDelete = (id: number) => {
+    calendarAPI
+      .deleteEvent(id)
+      .then(() => {
+        dispatchCalendarActions({
+          type: "DELETE_EVENT",
+          payload: id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting event:", error);
       });
   };
 
@@ -92,8 +105,9 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
               payload: date,
             })
           }
-          activeDay={calendarState.activeDay}
           today={calendarState.today}
+          handleEventDelete={handleEventDelete}
+          activeDay={calendarState.activeDay}
           events={calendarState.events}
         />
       </main>

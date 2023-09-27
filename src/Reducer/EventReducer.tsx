@@ -10,7 +10,7 @@ type Action =
   | { type: "SAVE_EVENT_REQUEST" }
   | { type: "SAVE_EVENT_FAILURE" }
   | { type: "SAVE_EVENT_SUCCESS"; payload: Event }
-  | { type: "RENDER_EVENTS"; payload: Event[] };
+  | { type: "DELETE_EVENT"; payload: number };
 
 export interface State {
   today: Date;
@@ -46,7 +46,14 @@ export const eventReducer = (state: State, action: Action): State => {
         events: [...state.events, action.payload],
         isLoading: false,
       };
-
+    case "DELETE_EVENT":
+      return {
+        ...state,
+        events: state.events.filter((event) => {
+          if (action.payload !== event.id) return event;
+        }),
+        isLoading: false,
+      };
     default:
       return state;
   }

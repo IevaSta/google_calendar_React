@@ -1,7 +1,10 @@
 import { timeConverterToPixels } from "../Helpers/timeConverterToPx";
-import { Event as EventItem } from "../Helpers/createCalendarAPI";
+import { Event } from "../Helpers/createCalendarAPI";
 
-export const Event: React.FC<{ event: EventItem }> = ({ event }) => {
+export const EventItem: React.FC<{
+  event: Event;
+  onDelete: () => void;
+}> = ({ event, onDelete }) => {
   if (!event) {
     throw new Error("Event prop is null or undefined");
   }
@@ -9,10 +12,6 @@ export const Event: React.FC<{ event: EventItem }> = ({ event }) => {
   const marginTop = timeConverterToPixels(event.start);
   const height =
     timeConverterToPixels(event.end) - timeConverterToPixels(event.start);
-
-  // const handleEventDelete = () => {
-  //   console.log("event deleted", id);
-  // };
 
   return (
     <div
@@ -27,7 +26,7 @@ export const Event: React.FC<{ event: EventItem }> = ({ event }) => {
         <button
           className="event-delete-btn"
           data-id={event.id}
-          // onClick={handleEventDelete}
+          onClick={onDelete}
         >
           x
         </button>
