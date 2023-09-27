@@ -1,45 +1,32 @@
-import { useCalendarState } from "../Reducer/CalendarReducer";
-import SideCalendarDays from "./SideCalendarDays";
+import { MonthViewCalendarDays } from "./MonthViewCalendarDays";
 
-function SideCalendar() {
-  const { state, dispatchState } = useCalendarState();
-
-  const handleNextMonth = () => {
-    dispatchState({ type: "NEXT_MONTH" });
-  };
-
-  const handleBackMonth = () => {
-    dispatchState({ type: "BACK_MONTH" });
-  };
-
+export const MonthViewCalendar: React.FC<{
+  displayPreviousMonth: () => void;
+  displayNextMonth: () => void;
+  setActiveDayClick: (date: Date) => void;
+  activeDay: Date;
+}> = ({
+  displayPreviousMonth,
+  displayNextMonth,
+  setActiveDayClick,
+  activeDay,
+}) => {
   const handleTitle = () => {
-    const date = new Date(state.activeDay);
+    const date = new Date(activeDay);
     return `${date.toLocaleString("en-US", {
       month: "long",
-    })} ${state.activeDay.getFullYear()}`;
-  };
-
-  const handleOpenModal = () => {
-    dispatchState({ type: "IS_OPEN_MODAL", payload: true });
+    })} ${activeDay.getFullYear()}`;
   };
 
   return (
-    <aside className="side-wrapper">
-      <button
-        className="open-event-modal button oval"
-        onClick={handleOpenModal}
-      >
-        <img src="./assets/svg/add.svg" alt="Google add icon." />
-        Create
-      </button>
-
+    <>
       <section className="side-calendar">
         <div className="side-calendar__header">
           <h3 className="side-calendar__title">{`${handleTitle()}`}</h3>
           <div className="side-calendar__header--btn-wrapper">
             <button
               className="button arrow backward-month__side"
-              onClick={handleBackMonth}
+              onClick={displayPreviousMonth}
             >
               <img
                 className="side-calendar__arrow"
@@ -49,7 +36,7 @@ function SideCalendar() {
             </button>
             <button
               className="button arrow forward-month__side"
-              onClick={handleNextMonth}
+              onClick={displayNextMonth}
             >
               <img
                 className="side-calendar__arrow"
@@ -70,12 +57,13 @@ function SideCalendar() {
             <li>F</li>
             <li>S</li>
           </ul>
-
-          <SideCalendarDays />
         </div>
-      </section>
-    </aside>
-  );
-}
 
-export default SideCalendar;
+        <MonthViewCalendarDays
+          setActiveDayClick={setActiveDayClick}
+          activeDay={activeDay}
+        />
+      </section>
+    </>
+  );
+};

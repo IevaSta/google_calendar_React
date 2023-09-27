@@ -1,25 +1,96 @@
-import { useCalendarState } from "../Reducer/CalendarReducer";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { formatDateToYYYYMMDD } from "../Helpers/formatDateToYYYYMMDD";
+import { formatTimeToHHMM } from "../Helpers/formatTimeToHHMM";
+import { formTimeValidation } from "../Helpers/formTimeValidation";
+import { formTitleRequired } from "../Helpers/formInputValidation";
 
-function ModalForm() {
-  const { dispatchState } = useCalendarState();
+export interface FormData {
+  title: string;
+  date: string;
+  start: string;
+  end: string;
+}
 
-  const handleCloseModal = () => {
-    dispatchState({ type: "IS_OPEN_MODAL", payload: false });
+interface FormErrors {
+  title?: string;
+  start?: string;
+  end?: string;
+}
+
+export const Form: React.FC<{
+  onSave: (formValues: FormData) => void;
+}> = ({ onSave }) => {
+  const [formData, setFormData] = useState<FormData>(() => {
+    const eventEndDate = new Date(new Date());
+    eventEndDate.setHours(new Date().getHours() + 1);
+
+    return {
+      title: "",
+      date: formatDateToYYYYMMDD(new Date()),
+      start: formatTimeToHHMM(new Date()),
+      end: formatTimeToHHMM(eventEndDate),
+    };
+  });
+
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+  const checkTime = ({ date, start, end }: FormData) => {
+    const timeErrorList = formTimeValidation(date, start, end);
+
+    setFormErrors((formErrors) => ({ ...formErrors, ...timeErrorList }));
+
+    return timeErrorList;
+  };
+
+  const checkTitle = (title: string) => {
+    const titleError = formTitleRequired(title);
+
+    setFormErrors((formErrors) => ({ ...formErrors, title: titleError }));
+    return titleError;
+  };
+
+  const handleTitleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    checkTitle(value);
+  };
+
+  const handleTimeChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    checkTime({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const titleError = checkTitle(formData.title);
+    const timeErrorList = checkTime(formData);
+
+    if (!titleError && !timeErrorList.end && !timeErrorList.start) {
+      const formValues = {
+        ...formData,
+        title: formData.title.trim(),
+      };
+
+      onSave(formValues);
+    }
   };
 
   return (
-    <form
-      className="event__form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleCloseModal();
-      }}
-    >
+    <form className="event__form" onSubmit={handleSubmit}>
       <input
-        className="event__form-header"
+        className={`event__form-header ${formErrors.title ? "error" : ""}`}
         type="text"
         placeholder="Add title"
         name="title"
+        value={formData.title}
+        onChange={handleTitleInputChange}
       />
 
       <nav className="event-nav">
@@ -84,17 +155,27 @@ function ModalForm() {
               className="event--set-date event-form__item event-date"
               type="date"
               name="date"
+              value={formData.date}
+              onChange={handleTimeChange}
             />
             <input
-              className="event--set-date event-form__item event-time__start"
+              className={`event--set-date event-form__item event-time__start ${
+                formErrors.start ? "error" : ""
+              }`}
               type="time"
               name="start"
+              value={formData.start}
+              onChange={handleTimeChange}
             />
             <span> - </span>
             <input
-              className="event--set-date event-form__item event-time__end"
+              className={`event--set-date event-form__item event-time__end ${
+                formErrors.end ? "error" : ""
+              }`}
               type="time"
               name="end"
+              value={formData.end}
+              onChange={handleTimeChange}
             />
           </label>
         </span>
@@ -175,25 +256,15 @@ function ModalForm() {
         </ul>
       </section>
 
-      {/* <section className="tab-content" data-tab="office">
-        <span>
-          <label>
-            <input type="checkbox">Automatically decline meetings</input>
-          </label>
+      {formErrors.title && (
+        <span className="error-msg">{formErrors.title}</span>
+      )}
 
-          <label>
-            <input type="radio">Only new meeting invitations</input>
-            <input type="radio">New and existing meetings</input>
-          </label>
+      {formErrors.start && (
+        <span className="error-msg">{formErrors.start}</span>
+      )}
 
-          <label>
-            Description
-            <textarea className="office-desc" placeholder="..."></textarea>
-          </label>
-        </span>
-      </section>*/}
-
-      {/* <div className="error-msg"></div> */}
+      {formErrors.end && <span className="error-msg">{formErrors.end}</span>}
 
       <div className="event__button--wrapper">
         <button type="button" className="event-btn event-more-btn">
@@ -209,6 +280,4 @@ function ModalForm() {
       </div>
     </form>
   );
-}
-
-export default ModalForm;
+};

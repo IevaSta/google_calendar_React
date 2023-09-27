@@ -1,20 +1,11 @@
-import { useCalendarState } from "../Reducer/CalendarReducer";
-import ModalForm from "./ModalForm";
-
-function Modal() {
-  const { state, dispatchState } = useCalendarState();
-
-  const handleCloseModal = () => {
-    dispatchState({ type: "IS_OPEN_MODAL", payload: false });
-  };
-
+export const Modal: React.FC<{
+  onClose: () => void;
+  children: React.ReactNode;
+}> = ({ onClose, children }) => {
   return (
-    <section className={`event-modal ${state.isModalOpen ? "" : "hidden"}`}>
+    <section className="event-modal">
       <header className="event-modal__header">
-        <button
-          onClick={handleCloseModal}
-          className="close-event-modal event-btn"
-        >
+        <button onClick={onClose} className="close-event-modal event-btn">
           <img
             className="close-event-icon"
             src="../assets/svg/close.svg"
@@ -22,10 +13,7 @@ function Modal() {
           />
         </button>
       </header>
-
-      <ModalForm />
+      {children}
     </section>
   );
-}
-
-export default Modal;
+};

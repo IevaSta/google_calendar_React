@@ -562,6 +562,7 @@ li {
 
 /* events error style*/
 .error-msg {
+    padding-top: 20px;
     color: red;
     font-size: 14px;
 }

@@ -1,25 +1,14 @@
-import { useCalendarState } from "../Reducer/CalendarReducer";
-
-function Header() {
-  const { state, dispatchState } = useCalendarState();
-
-  const setTodayButton = () => {
-    dispatchState({ type: "TODAY" });
-  };
-
-  const handleNextWeek = () => {
-    dispatchState({ type: "NEXT_WEEK" });
-  };
-
-  const handleBackWeek = () => {
-    dispatchState({ type: "BACK_WEEK" });
-  };
-
+export const Header: React.FC<{
+  onTodayClick: () => void;
+  displayPreviousWeek: () => void;
+  displayNextWeek: () => void;
+  activeDay: Date;
+}> = ({ onTodayClick, displayPreviousWeek, displayNextWeek, activeDay }) => {
   const handleTitle = () => {
-    const date = new Date(state.activeDay);
+    const date = new Date(activeDay);
     return `${date.toLocaleString("en-US", {
       month: "long",
-    })} ${state.activeDay.getFullYear()}`;
+    })} ${activeDay.getFullYear()}`;
   };
 
   return (
@@ -35,12 +24,12 @@ function Header() {
         />
         <h1 className="header-title">Calendar</h1>
 
-        <button className="button rectangle set-today" onClick={setTodayButton}>
+        <button className="button rectangle set-today" onClick={onTodayClick}>
           Today
         </button>
         <button
           className="button arrow backward-week__main"
-          onClick={handleBackWeek}
+          onClick={displayPreviousWeek}
         >
           <img
             className="header-arrow"
@@ -50,7 +39,7 @@ function Header() {
         </button>
         <button
           className="button arrow forward-week__main"
-          onClick={handleNextWeek}
+          onClick={displayNextWeek}
         >
           <img
             className="header-arrow"
@@ -68,6 +57,4 @@ function Header() {
       </select>
     </header>
   );
-}
-
-export default Header;
+};

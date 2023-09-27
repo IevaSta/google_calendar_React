@@ -1,17 +1,13 @@
-import { useCalendarState } from "../Reducer/CalendarReducer";
-
-function MainCalendarDays() {
-  const { state, dispatchState } = useCalendarState();
-
+export const WeekViewCalendarHeader: React.FC<{
+  setActiveDayClick: (date: Date) => void;
+  activeDay: Date;
+  today: Date;
+}> = ({ setActiveDayClick, activeDay, today }) => {
   const getWeekDayName = (_date: Date) => {
     const date = new Date(_date);
     return `${date.toLocaleString("en-US", {
       weekday: "short",
     })}`;
-  };
-
-  const handleSetActiveDay = (date: Date) => {
-    dispatchState({ type: "CLICKED_ACTIVE_DAY", payload: date });
   };
 
   const days: {
@@ -22,25 +18,19 @@ function MainCalendarDays() {
     date: Date;
   }[] = [];
 
-  const year = state.activeDay.getFullYear();
-  const month = state.activeDay.getMonth();
-  const day = state.activeDay.getDate();
-
+  const year = activeDay.getFullYear();
+  const month = activeDay.getMonth();
+  const day = activeDay.getDate();
   const todayWeekDay = new Date(year, month, day).getDay(); // 0-6 Sunday-Saturday
-
-  const currentWeekStart = new Date(state.activeDay);
+  const currentWeekStart = new Date(activeDay);
   currentWeekStart.setDate(day - todayWeekDay);
-
   const getWeekDays = () => {
     const weekDays = new Array(7).fill({}).map((_, i) => {
       const renderingDay = new Date(currentWeekStart);
       renderingDay.setDate(renderingDay.getDate() + i);
-
       return {
-        isCurrentDay:
-          renderingDay.toDateString() === state.today.toDateString(),
-        isActiveDay:
-          renderingDay.toDateString() === state.activeDay.toDateString(),
+        isCurrentDay: renderingDay.toDateString() === today.toDateString(),
+        isActiveDay: renderingDay.toDateString() === activeDay.toDateString(),
         weekDay: getWeekDayName(renderingDay),
         monthDay: renderingDay.getDate(),
         date: renderingDay,
@@ -48,9 +38,7 @@ function MainCalendarDays() {
     });
     return [...days, ...weekDays];
   };
-
   const weekDays = getWeekDays();
-
   return (
     <ul className="lg-calendar__column">
       {weekDays.map((day) => (
@@ -60,7 +48,7 @@ function MainCalendarDays() {
         >
           <span className="week-day">{day.weekDay}</span>
           <button
-            onClick={() => handleSetActiveDay(day.date)}
+            onClick={() => setActiveDayClick(day.date)}
             className={`month-day ${day.isCurrentDay ? "crr-day" : ""} ${
               day.isActiveDay
                 ? day.isActiveDay !== day.isCurrentDay
@@ -71,12 +59,9 @@ function MainCalendarDays() {
           >
             {day.monthDay}
           </button>
-
           <span className="lg-calendar__column-list--border"></span>
         </li>
       ))}
     </ul>
   );
-}
-
-export default MainCalendarDays;
+};
