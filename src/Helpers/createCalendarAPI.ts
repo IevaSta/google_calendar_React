@@ -49,20 +49,19 @@ export function createCalendarAPI(config: {
           resolve(createdEvent);
         }, getRandomDelay());
       }),
-    /** delets event */
     deleteEvent: (id) =>
       new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const events = getEvents();
-          const index = events.findIndex((e: Event) => e.id === id);
-          if (index !== -1) {
-            events.splice(index, 1);
-            setEvents(events);
-            resolve();
-          } else {
-            reject("Event not found");
-          }
-        }, getRandomDelay());
+        // setTimeout(() => {
+        const events = getEvents();
+        const index = events.findIndex((e: Event) => e.id === id);
+        if (index !== -1) {
+          events.splice(index, 1);
+          setEvents(events);
+          resolve();
+        } else {
+          reject("Event not found");
+        }
+        // }, getRandomDelay());
       }),
     listEvents: (): Promise<Event[]> =>
       new Promise((resolve) => {

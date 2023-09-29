@@ -5,20 +5,13 @@ export const EventItem: React.FC<{
   event: Event;
   onDelete: () => void;
 }> = ({ event, onDelete }) => {
-  if (!event) {
-    throw new Error("Event prop is null or undefined");
-  }
-
-  const marginTop = timeConverterToPixels(event.start);
-  const height =
-    timeConverterToPixels(event.end) - timeConverterToPixels(event.start);
-
   return (
     <div
       className="event"
       style={{
-        marginTop: marginTop,
-        height: height,
+        marginTop: timeConverterToPixels(event.start),
+        height:
+          timeConverterToPixels(event.end) - timeConverterToPixels(event.start),
       }}
     >
       <span className="event-title">

@@ -9,6 +9,9 @@ export interface FormData {
   date: string;
   start: string;
   end: string;
+
+  titlePristine: boolean;
+  submited: boolean;
 }
 
 interface FormErrors {
@@ -29,58 +32,47 @@ export const Form: React.FC<{
       date: formatDateToYYYYMMDD(new Date()),
       start: formatTimeToHHMM(new Date()),
       end: formatTimeToHHMM(eventEndDate),
+      titlePristine: true,
+      submited: false,
     };
   });
-
-  const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-  const checkTime = ({ date, start, end }: FormData) => {
-    const timeErrorList = formTimeValidation(date, start, end);
-
-    setFormErrors((formErrors) => ({ ...formErrors, ...timeErrorList }));
-
-    return timeErrorList;
-  };
-
-  const checkTitle = (title: string) => {
-    const titleError = formTitleRequired(title);
-
-    setFormErrors((formErrors) => ({ ...formErrors, title: titleError }));
-    return titleError;
-  };
 
   const handleTitleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-    checkTitle(value);
+    const { value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      title: value,
+      titlePristine: false,
+    }));
   };
 
-  const handleTimeChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-
-    checkTime({ ...formData, [name]: value });
-  };
+  const handleTimeChange =
+    (name: "date" | "start" | "end") =>
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { value } = e.target;
+      setFormData((prevData): FormData => ({ ...prevData, [name]: value }));
+    };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const titleError = checkTitle(formData.title);
-    const timeErrorList = checkTime(formData);
+    const { title, end, start } = getFormErrors(formData);
 
-    if (!titleError && !timeErrorList.end && !timeErrorList.start) {
+    if (!title && !end && !start) {
       const formValues = {
         ...formData,
         title: formData.title.trim(),
       };
 
       onSave(formValues);
+    } else {
+      setFormData((s) => ({ ...s, submited: true }));
     }
   };
+
+  const formErrors = getFormVisibleErrors(formData);
 
   return (
     <form className="event__form" onSubmit={handleSubmit}>
@@ -155,8 +147,9 @@ export const Form: React.FC<{
               className="event--set-date event-form__item event-date"
               type="date"
               name="date"
+              aria-required="true"
               value={formData.date}
-              onChange={handleTimeChange}
+              onChange={handleTimeChange("date")}
             />
             <input
               className={`event--set-date event-form__item event-time__start ${
@@ -165,7 +158,7 @@ export const Form: React.FC<{
               type="time"
               name="start"
               value={formData.start}
-              onChange={handleTimeChange}
+              onChange={handleTimeChange("start")}
             />
             <span> - </span>
             <input
@@ -175,7 +168,7 @@ export const Form: React.FC<{
               type="time"
               name="end"
               value={formData.end}
-              onChange={handleTimeChange}
+              onChange={handleTimeChange("end")}
             />
           </label>
         </span>
@@ -281,3 +274,30 @@ export const Form: React.FC<{
     </form>
   );
 };
+
+const checkTime = ({ date, start, end }: FormData) => {
+  const timeErrorList = formTimeValidation(date, start, end);
+  return timeErrorList;
+};
+
+const checkTitle = (title: string) => {
+  const titleError = formTitleRequired(title);
+  return titleError;
+};
+
+function getFormErrors(state: FormData): FormErrors {
+  return {
+    title: checkTitle(state.title),
+    ...checkTime(state),
+  };
+}
+
+function getFormVisibleErrors(state: FormData): FormErrors {
+  return {
+    title:
+      !state.titlePristine || state.submited
+        ? checkTitle(state.title)
+        : undefined,
+    ...checkTime(state),
+  };
+}

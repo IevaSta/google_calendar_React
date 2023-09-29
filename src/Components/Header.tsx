@@ -1,9 +1,9 @@
 export const Header: React.FC<{
   onTodayClick: () => void;
-  displayPreviousWeek: () => void;
-  displayNextWeek: () => void;
+  onPrevClick: () => void;
+  onNextClick: () => void;
   activeDay: Date;
-}> = ({ onTodayClick, displayPreviousWeek, displayNextWeek, activeDay }) => {
+}> = ({ onTodayClick, onPrevClick, onNextClick, activeDay }) => {
   const handleTitle = () => {
     const date = new Date(activeDay);
     return `${date.toLocaleString("en-US", {
@@ -29,7 +29,7 @@ export const Header: React.FC<{
         </button>
         <button
           className="button arrow backward-week__main"
-          onClick={displayPreviousWeek}
+          onClick={onPrevClick}
         >
           <img
             className="header-arrow"
@@ -39,7 +39,7 @@ export const Header: React.FC<{
         </button>
         <button
           className="button arrow forward-week__main"
-          onClick={displayNextWeek}
+          onClick={onNextClick}
         >
           <img
             className="header-arrow"

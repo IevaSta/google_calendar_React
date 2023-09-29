@@ -5,12 +5,12 @@ import { WeekViewCalendarHeader } from "./WeekViewCalendarHeader";
 import { Column } from "./WeekViewDayColl";
 
 export const WeekViewCalendar: React.FC<{
-  setActiveDayClick: (date: Date) => void;
+  onDayClick: (date: Date) => void;
   activeDay: Date;
   today: Date;
   events: Event[];
   handleEventDelete: (id: number) => void;
-}> = ({ activeDay, events, handleEventDelete, setActiveDayClick, today }) => {
+}> = ({ activeDay, events, handleEventDelete, onDayClick, today }) => {
   const dayColumnData: {
     date: string;
   }[] = [];
@@ -22,19 +22,15 @@ export const WeekViewCalendar: React.FC<{
   const currentWeekStart = new Date(activeDay);
   currentWeekStart.setDate(day - todayWeekDay);
 
-  const getWeekViewDayColums = () => {
-    const weekViewDayColumn = new Array(7).fill({}).map((_, i) => {
-      const renderingDay = new Date(currentWeekStart);
-      renderingDay.setDate(renderingDay.getDate() + i);
-      return {
-        date: formatDateToYYYYMMDD(renderingDay),
-      };
-    });
+  const weekViewDayColumn = new Array(7).fill({}).map((_, i) => {
+    const renderingDay = new Date(currentWeekStart);
+    renderingDay.setDate(renderingDay.getDate() + i);
+    return {
+      date: formatDateToYYYYMMDD(renderingDay),
+    };
+  });
 
-    return [...dayColumnData, ...weekViewDayColumn];
-  };
-
-  const weekViewDayColums = getWeekViewDayColums();
+  const weekViewDayColums = [...dayColumnData, ...weekViewDayColumn];
 
   return (
     <section className="lg-calendar-wrapper">
@@ -45,7 +41,7 @@ export const WeekViewCalendar: React.FC<{
 
       <WeekViewCalendarHeader
         activeDay={activeDay}
-        setActiveDayClick={setActiveDayClick}
+        onDayClick={onDayClick}
         today={today}
       />
 

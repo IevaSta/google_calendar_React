@@ -12,7 +12,7 @@
     "test": "vite test"
   },
   "keywords": [],
-  "author": "Brian Holt",
+  "author": "Ieva St",
   "license": "ISC",
   "devDependencies": {
     "@types/react": "18.0.21",

@@ -4,11 +4,11 @@ import { eventReducer } from "./Reducer/EventReducer";
 import { MonthViewCalendar } from "./Components/MonthViewCalendar";
 import { Header } from "./Components/Header";
 import { WeekViewCalendar } from "./Components/WeekViewCalendar";
-import { createPortal } from "react-dom";
 import { Modal } from "./Components/Modal";
 import { Form, FormData } from "./Components/Form";
 import { calendarAPI } from "./Helpers/calendarAPI";
 import type { Event } from "./Helpers/createCalendarAPI";
+import { Spinner } from "./Components/Spinner";
 
 export function App({ initialEvents }: { initialEvents: Event[] }) {
   const [calendarState, dispatchCalendarActions] = useReducer(eventReducer, {
@@ -32,7 +32,7 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
         setShowModal(false);
       })
       .catch(() => {
-        // return dispatchState({ type: "SAVE_EVENT_FAILURE" });
+        // return dispatchCalendarActions({ type: "SAVE_EVENT_FAILURE" });
         return "calendarAPI.createEvent error";
       });
   };
@@ -55,10 +55,8 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
     <>
       <Header
         onTodayClick={() => dispatchCalendarActions({ type: "TODAY" })}
-        displayPreviousWeek={() =>
-          dispatchCalendarActions({ type: "BACK_WEEK" })
-        }
-        displayNextWeek={() => dispatchCalendarActions({ type: "NEXT_WEEK" })}
+        onPrevClick={() => dispatchCalendarActions({ type: "BACK_WEEK" })}
+        onNextClick={() => dispatchCalendarActions({ type: "NEXT_WEEK" })}
         activeDay={calendarState.activeDay}
       />
 
@@ -73,22 +71,16 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
             <img src="./assets/svg/add.svg" alt="Google add icon." />
             Create
           </button>
-          {showModal &&
-            createPortal(
-              <Modal onClose={() => setShowModal(false)}>
-                <Form onSave={onSave} />
-              </Modal>,
-              document.body
-            )}
+          {showModal && (
+            <Modal onClose={() => setShowModal(false)}>
+              <Form onSave={onSave} />
+            </Modal>
+          )}
 
           <MonthViewCalendar
-            displayPreviousMonth={() =>
-              dispatchCalendarActions({ type: "BACK_MONTH" })
-            }
-            displayNextMonth={() =>
-              dispatchCalendarActions({ type: "NEXT_MONTH" })
-            }
-            setActiveDayClick={(date: Date) =>
+            onPrevClick={() => dispatchCalendarActions({ type: "BACK_MONTH" })}
+            onNextClick={() => dispatchCalendarActions({ type: "NEXT_MONTH" })}
+            onDayClick={(date: Date) =>
               dispatchCalendarActions({
                 type: "CLICKED_ACTIVE_DAY",
                 payload: date,
@@ -99,7 +91,7 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
         </aside>
 
         <WeekViewCalendar
-          setActiveDayClick={(date: Date) =>
+          onDayClick={(date: Date) =>
             dispatchCalendarActions({
               type: "CLICKED_ACTIVE_DAY",
               payload: date,
@@ -129,8 +121,7 @@ const Root = () => {
       });
   }, []);
 
-  return events ? <App initialEvents={events} /> : null;
-  // return events ? <App initialEvents={events} /> : <Spinner />;
+  return events ? <App initialEvents={events} /> : <Spinner />;
 };
 
 const container = document.getElementById("root");

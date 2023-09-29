@@ -1,32 +1,25 @@
 import { MonthViewCalendarDays } from "./MonthViewCalendarDays";
 
 export const MonthViewCalendar: React.FC<{
-  displayPreviousMonth: () => void;
-  displayNextMonth: () => void;
-  setActiveDayClick: (date: Date) => void;
+  onPrevClick: () => void;
+  onNextClick: () => void;
+  onDayClick: (date: Date) => void;
   activeDay: Date;
-}> = ({
-  displayPreviousMonth,
-  displayNextMonth,
-  setActiveDayClick,
-  activeDay,
-}) => {
-  const handleTitle = () => {
-    const date = new Date(activeDay);
-    return `${date.toLocaleString("en-US", {
-      month: "long",
-    })} ${activeDay.getFullYear()}`;
-  };
-
+}> = ({ onPrevClick, onNextClick, onDayClick, activeDay }) => {
   return (
     <>
       <section className="side-calendar">
         <div className="side-calendar__header">
-          <h3 className="side-calendar__title">{`${handleTitle()}`}</h3>
+          <h3 className="side-calendar__title">
+            {activeDay.toLocaleString("en-US", {
+              month: "long",
+            })}{" "}
+            {activeDay.getFullYear()}
+          </h3>
           <div className="side-calendar__header--btn-wrapper">
             <button
               className="button arrow backward-month__side"
-              onClick={displayPreviousMonth}
+              onClick={onPrevClick}
             >
               <img
                 className="side-calendar__arrow"
@@ -36,7 +29,7 @@ export const MonthViewCalendar: React.FC<{
             </button>
             <button
               className="button arrow forward-month__side"
-              onClick={displayNextMonth}
+              onClick={onNextClick}
             >
               <img
                 className="side-calendar__arrow"
@@ -59,10 +52,7 @@ export const MonthViewCalendar: React.FC<{
           </ul>
         </div>
 
-        <MonthViewCalendarDays
-          setActiveDayClick={setActiveDayClick}
-          activeDay={activeDay}
-        />
+        <MonthViewCalendarDays onDayClick={onDayClick} activeDay={activeDay} />
       </section>
     </>
   );
