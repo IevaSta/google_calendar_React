@@ -1,0 +1,310 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+  padding-inline: 40px;
+  font-size: 16px;
+}
+
+.formItem {
+  height: 36px;
+}
+
+.formNav,
+.creatorSettings {
+  display: flex;
+  flex-direction: row;
+}
+
+.formHeader {
+  margin-bottom: 20px;
+
+  outline: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+
+  font-size: 22px;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  color: var(--color-font) !important;
+}
+
+.formHeader:focus {
+  border-bottom: 2px solid var(--color-accent-dark);
+  caret-color: var(--color-accent-dark);
+}
+
+.formNav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeSet__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.dateSet {
+  border: none;
+  outline: none;
+  padding: 0 10px 0 10px;
+  color: var(--color-font);
+}
+
+.checkbox,
+.checkbox__label {
+  display: flex;
+  align-items: center;
+  color: var(--color-font);
+  font-size: 14px;
+}
+
+.checkbox__input,
+.checkbox__label {
+  margin-inline-end: 10px;
+}
+
+.select {
+  width: 150px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  margin-inline-start: -10px;
+  padding: 10px;
+  padding-inline-start: 10px;
+  background-color: var(--color-hover);
+  color: var(--color-font);
+  cursor: pointer;
+  font-size: 14px;
+
+  /* arrow style */
+  appearance: none;
+  background-image: url(./assets/svg/arrow-down.svg);
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: 50%;
+}
+
+.select:hover,
+.select:focus {
+  background-color: var(--color-tertiary);
+}
+
+.checkbox__guest,
+.checkbox__location {
+  border: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  outline: none;
+  color: var(--color-font);
+  font-size: 14px;
+  width: 100%;
+
+  margin-inline-start: -10px;
+  padding: 10px;
+  padding-inline-start: 10px;
+}
+
+.checkbox__guest:hover,
+.checkbox__location:hover {
+  cursor: pointer;
+  background-color: var(--color-hover);
+  caret-color: var(--color-accent-dark);
+}
+
+.checkbox__guest:focus,
+.checkbox__location:focus {
+  border-bottom: 2px solid var(--color-accent-dark);
+}
+
+.remoteType {
+  width: 250px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  margin-inline-start: -10px;
+  padding: 10px;
+  padding-inline-start: 10px;
+  background-color: var(--color-accent-dark);
+  color: var(--color-light);
+  cursor: pointer;
+  font-size: 14px;
+
+  /* arrow style */
+  appearance: none;
+  background-image: url(./assets/svg/arrow-down-white.svg);
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: 50%;
+}
+
+.remoteType:hover,
+.remoteType:focus {
+  background-color: var(--color-accent-hover);
+}
+
+.description_wrapper {
+  width: 100%;
+
+  margin-inline-start: -10px;
+  padding: 10px;
+  padding-inline-start: 10px;
+
+  font-size: 14px;
+  bottom: 0;
+  border-radius: 5px;
+  color: var(--color-secondary);
+  text-align: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.description_wrapper:hover {
+  cursor: pointer;
+  background-color: var(--color-hover);
+}
+
+.inputDescription {
+  width: 80px;
+  outline: none;
+  border: none;
+  font-size: 14px;
+  background-color: transparent;
+  text-align: center;
+}
+
+.labelDescription {
+  cursor: pointer;
+}
+
+.inputFile {
+  display: none;
+}
+
+.inputDescription:hover,
+.inputDescription:focus,
+.inputLabel:hover,
+.inputLabel:focus {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.inputLabel {
+  padding-inline-start: 10px;
+}
+
+.creatorName {
+  font-size: 14px;
+  color: var(--color-font);
+}
+
+.creatorName::after {
+  content: "";
+  display: inline-block;
+  margin-inline-start: 15px;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: var(--color-accent-light);
+}
+
+.creatorSettings {
+  font-size: 12px;
+  color: var(--color-font-light);
+}
+
+.creatorSettings>li {
+  padding-inline-end: 20px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: end;
+  padding: 0 16px 10px 0;
+}
+
+/* events error style*/
+.errorMsg {
+  padding-top: 20px;
+  color: red;
+  font-size: 14px;
+}
+
+.error {
+  color: red;
+  border-color: red;
+}
+
+/* buttons */
+.eventBtn {
+  color: blue;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.eventBtn:hover {
+  cursor: pointer;
+}
+
+/* 
+nav tabs button
+time zone button
+*/
+
+.navBtn {
+  color: var(--color-font-light);
+  padding: 6px 12px;
+}
+
+.navBtn:hover,
+.navBtn:focus {
+  background-color: var(--color-hover);
+}
+
+.navBtn:active {
+  background-color: var(--color-tertiary);
+}
+
+.navBtn--open {
+  color: var(--color-accent-dark);
+  background-color: var(--color-active);
+}
+
+/* more options button */
+.moreBtn {
+  color: var(--color-font-light);
+  padding: 6px 12px;
+}
+
+.moreBtn:hover,
+.moreBtn:focus {
+  background-color: var(--color-hover);
+  color: var(--color-font);
+}
+
+.moreBtn:active {
+  background-color: var(--color-tertiary);
+}
+
+/* save button */
+.saveBtn {
+  background-color: var(--color-accent-dark);
+  color: var(--color-light);
+  align-self: flex-start;
+  padding: 12px 24px;
+  margin-inline-start: 10px;
+}
+
+.saveBtn:hover,
+.saveBtn:focus {
+  background-color: var(--color-medium);
+  color: var(--color-font);
+}
+
+.saveBtn:active {
+  background-color: var(--color-accent-active-dark);
+}

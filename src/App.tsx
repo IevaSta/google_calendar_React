@@ -10,6 +10,12 @@ import { calendarAPI } from "./Helpers/calendarAPI";
 import type { Event } from "./Helpers/createCalendarAPI";
 import { Spinner } from "./Components/Spinner";
 
+export interface OnClickFormData {
+  date?: string;
+  start?: string;
+  end?: string;
+}
+
 export function App({ initialEvents }: { initialEvents: Event[] }) {
   const [calendarState, dispatchCalendarActions] = useReducer(eventReducer, {
     today: new Date(),
@@ -19,7 +25,9 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
     isError: false,
   });
 
-  const [showModal, setShowModal] = useState(false);
+  const [formModalState, setFormModalState] = useState<
+    OnClickFormData | undefined
+  >();
 
   const onSave = (formValues: FormData) => {
     calendarAPI
@@ -29,12 +37,16 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
           type: "SAVE_EVENT_SUCCESS",
           payload: event,
         });
-        setShowModal(false);
+        setFormModalState(undefined);
       })
       .catch(() => {
         // return dispatchCalendarActions({ type: "SAVE_EVENT_FAILURE" });
         return "calendarAPI.createEvent error";
       });
+  };
+
+  const onTimeClick = (onClickFormData: OnClickFormData) => {
+    setFormModalState(onClickFormData);
   };
 
   const handleEventDelete = (id: number) => {
@@ -65,15 +77,19 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
           <button
             className="open-event-modal button oval"
             onClick={() => {
-              setShowModal(true);
+              setFormModalState({});
             }}
           >
             <img src="./assets/svg/add.svg" alt="Google add icon." />
             Create
           </button>
-          {showModal && (
-            <Modal onClose={() => setShowModal(false)}>
-              <Form onSave={onSave} />
+          {formModalState && (
+            <Modal
+              onClose={() => {
+                setFormModalState(undefined);
+              }}
+            >
+              <Form onSave={onSave} initFormData={formModalState} />
             </Modal>
           )}
 
@@ -91,6 +107,7 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
         </aside>
 
         <WeekViewCalendar
+          onTimeClick={onTimeClick}
           onDayClick={(date: Date) =>
             dispatchCalendarActions({
               type: "CLICKED_ACTIVE_DAY",
@@ -109,6 +126,9 @@ export function App({ initialEvents }: { initialEvents: Event[] }) {
 
 const Root = () => {
   const [events, setEvents] = useState<undefined | Event[]>(undefined);
+
+  //try to use query for this code
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     calendarAPI
