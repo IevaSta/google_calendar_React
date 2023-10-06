@@ -1,3 +1,4 @@
+import { OnClickFormData } from "../App";
 import { Event } from "../Helpers/createCalendarAPI";
 import { formatDateToYYYYMMDD } from "../Helpers/formatDateToYYYYMMDD";
 import { EventItem } from "./Event";
@@ -10,7 +11,15 @@ export const WeekViewCalendar: React.FC<{
   today: Date;
   events: Event[];
   handleEventDelete: (id: number) => void;
-}> = ({ activeDay, events, handleEventDelete, onDayClick, today }) => {
+  onTimeClick: (onClickFormData: OnClickFormData) => void;
+}> = ({
+  activeDay,
+  events,
+  handleEventDelete,
+  onDayClick,
+  today,
+  onTimeClick,
+}) => {
   const dayColumnData: {
     date: string;
   }[] = [];
@@ -119,7 +128,11 @@ export const WeekViewCalendar: React.FC<{
       <div className="week-layout-wrapper">
         {weekViewDayColums.map((columnDate) => {
           return (
-            <Column key={columnDate.date}>
+            <Column
+              key={columnDate.date}
+              date={columnDate.date}
+              onTimeClick={onTimeClick}
+            >
               {events
                 .filter((event) => event.date === columnDate.date)
                 .map((event, i) => {
